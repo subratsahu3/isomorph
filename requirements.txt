@@ -1,0 +1,5 @@
+# ISOMORPH Dependencies
+# The core engine runs on pure Python 3.9+ with zero required external dependencies.
+# The following optional packages enable accelerated matrix kernels and visualization:
+networkx>=3.0
+numpy>=1.24.0

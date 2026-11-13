@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISOMORPH | Cross-Disciplinary Epistemic Discovery Engine</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #131b2e;
+      --card-border: #1e293b;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.2);
+      --success: #10b981;
+      --danger: #f43f5e;
+      --warning: #f59e0b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
+    body { background: var(--bg); color: var(--text); padding: 24px; min-height: 100vh; }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 20px; margin-bottom: 24px; }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .logo-badge { background: linear-gradient(135deg, #0284c7, #6366f1); padding: 8px 14px; border-radius: 8px; font-weight: 800; font-size: 1.2rem; letter-spacing: 2px; }
+    .tagline { color: var(--text-muted); font-size: 0.9rem; }
+    .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 18px; text-align: center; }
+    .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    .tabs { display: flex; gap: 12px; margin-bottom: 20px; }
+    .tab-btn { background: #1a2234; border: 1px solid var(--card-border); color: var(--text-muted); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+    .tab-btn.active, .tab-btn:hover { background: var(--accent); color: #0b0f19; border-color: var(--accent); }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media(max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+    .bridge-badge { background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: bold; }
+    .collision-badge { background: rgba(244, 63, 94, 0.15); color: var(--danger); border: 1px solid var(--danger); padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: bold; }
+
+    .domain-tag { font-size: 0.8rem; color: #38bdf8; background: #0f172a; padding: 3px 8px; border-radius: 4px; margin-right: 6px; }
+    .eq-box { background: #080c14; border-left: 3px solid var(--accent); padding: 12px; border-radius: 4px; font-family: monospace; font-size: 0.9rem; margin: 10px 0; color: #a5f3fc; overflow-x: auto; }
+    .protocol-box { background: #080c14; border-left: 3px solid var(--success); padding: 12px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; margin: 10px 0; color: #86efac; white-space: pre-wrap; }
+
+    .node-map-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem; }
+    .node-map-table th, .node-map-table td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--card-border); }
+    .node-map-table th { color: var(--text-muted); background: #0a0f1d; }
+
+    button.action-btn { background: var(--accent); color: #0b0f19; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    button.action-btn:hover { background: #7dd3fc; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo-badge">ISOMORPH</div>
+      <div>
+        <h2>Project ISOMORPH</h2>
+        <div class="tagline">Cross-Disciplinary Structural Isomorphism & Dialectic Discovery Engine</div>
+      </div>
+    </div>
+    <div>
+      <button class="action-btn" onclick="fetchScan()">↻ Re-Scan Corpus</button>
+    </div>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-value" id="stat-papers">0</div>
+      <div class="stat-label">Indexed Papers</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-domains">0</div>
+      <div class="stat-label">Scientific Domains</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-bridges">0</div>
+      <div class="stat-label">Discovered Bridges</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-collisions" style="color: var(--danger);">0</div>
+      <div class="stat-label">Axiomatic Collisions</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('bridges')">🌉 Discovered Bridges</button>
+    <button class="tab-btn" onclick="switchTab('collisions')">💥 Axiomatic Collisions</button>
+    <button class="tab-btn" onclick="switchTab('papers')">📚 Indexed Literature</button>
+  </div>
+
+  <!-- Bridges Panel -->
+  <div id="panel-bridges" class="panel active">
+    <div id="bridges-container">Loading discoveries...</div>
+  </div>
+
+  <!-- Collisions Panel -->
+  <div id="panel-collisions" class="panel">
+    <div id="collisions-container">Loading collisions...</div>
+  </div>
+
+  <!-- Papers Panel -->
+  <div id="panel-papers" class="panel">
+    <div id="papers-container" class="grid-2">Loading papers...</div>
+  </div>
+
+  <script>
+    function switchTab(name) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('panel-' + name).classList.add('active');
+    }
+
+    async function fetchScan() {
+      try {
+        const res = await fetch('/api/scan');
+        const data = await res.json();
+        renderDashboard(data);
+      } catch (err) {
+        console.error("Scan error:", err);
+      }
+    }
+
+    function renderDashboard(data) {
+      const papers = data.papers || [];
+      const bridges = data.bridges || [];
+      const collisions = data.collisions || [];
+
+      // Stats
+      document.getElementById('stat-papers').innerText = papers.length;
+      const domains = new Set(papers.map(p => p.domain));
+      document.getElementById('stat-domains').innerText = domains.size;
+      document.getElementById('stat-bridges').innerText = bridges.length;
+      document.getElementById('stat-collisions').innerText = collisions.length;
+
+      // Render Bridges
+      const bContainer = document.getElementById('bridges-container');
+      if (bridges.length === 0) {
+        bContainer.innerHTML = "<p>No cross-domain bridges discovered yet.</p>";
+      } else {
+        bContainer.innerHTML = bridges.map(b => `
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <span class="domain-tag">${b.source_domain}</span>
+                ⟷
+                <span class="domain-tag">${b.target_domain}</span>
+              </div>
+              <div class="bridge-badge">${(b.topological_similarity * 100).toFixed(1)}% Topological Match</div>
+            </div>
+            <h3 style="margin-bottom: 8px;">Bridge ${b.bridge_id}: ${b.source_title} ⟷ ${b.target_title}</h3>
+            
+            <p style="margin: 12px 0; color: #e2e8f0; line-height: 1.5;">
+              <strong>Cross-Disciplinary Hypothesis:</strong> ${b.synthesized_hypothesis}
+            </p>
+
+            <table class="node-map-table">
+              <thead>
+                <tr>
+                  <th>${b.source_domain} Variable</th>
+                  <th>Structural Equivalence</th>
+                  <th>${b.target_domain} Variable</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${Object.entries(b.mapped_nodes).map(([src, tgt]) => `
+                  <tr>
+                    <td><code>${src}</code></td>
+                    <td>⟷</td>
+                    <td><code>${tgt}</code></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+
+            <div style="margin-top: 10px;">
+              <strong>Derived Mathematical Bridge Equation:</strong>
+              <div class="eq-box">${b.mathematical_bridge_equation}</div>
+            </div>
+
+            <div style="margin-top: 10px;">
+              <strong>Popperian Falsification Protocol:</strong>
+              <div class="protocol-box">${b.falsification_protocol}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Render Collisions
+      const cContainer = document.getElementById('collisions-container');
+      if (collisions.length === 0) {
+        cContainer.innerHTML = "<p>No contradictory axioms detected.</p>";
+      } else {
+        cContainer.innerHTML = collisions.map(c => `
+          <div class="card">
+            <div class="card-header">
+              <span class="collision-badge">Axiomatic Clash</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">${c.paper_a} vs ${c.paper_b}</span>
+            </div>
+            <h4 style="color: var(--danger); margin-bottom: 8px;">${c.conflicting_premise}</h4>
+            <p style="margin-bottom: 8px; color: #cbd5e1;"><strong>Mathematical Contradiction:</strong> ${c.mathematical_contradiction}</p>
+            <p style="color: #94a3b8; font-size: 0.9rem;"><strong>Epistemic Implication:</strong> ${c.epistemic_implication}</p>
+          </div>
+        `).join('');
+      }
+
+      // Render Papers
+      const pContainer = document.getElementById('papers-container');
+      pContainer.innerHTML = papers.map(p => `
+        <div class="card">
+          <div class="card-header">
+            <span class="domain-tag">${p.domain}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">${p.paper_id} (${p.year})</span>
+          </div>
+          <h4>${p.title}</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 6px 0;">Authors: ${p.authors}</p>
+          <p style="font-size: 0.85rem; margin: 6px 0;"><strong>Phenomenon:</strong> ${p.phenomenon}</p>
+          <p style="font-size: 0.85rem; color: #f59e0b; margin: 6px 0;"><strong>Bottleneck:</strong> ${p.unresolved_bottleneck}</p>
+          <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);">
+            Regime: <code>${p.regime}</code> | Mechanisms: ${p.mechanisms.length}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Auto-fetch on load
+    fetchScan();
+  </script>
+</body>
+</html>
