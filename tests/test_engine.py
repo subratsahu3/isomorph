@@ -1,7 +1,7 @@
 """
 ISOMORPH: Unit Test Suite
 Verifies topological invariance, Weisfeiler-Lehman hashing, cross-domain matching,
-conflict detection, and hypothesis synthesis.
+conflict detection, pairwise matching, and dossier synthesis.
 """
 
 import unittest
@@ -15,6 +15,7 @@ from isomorph.core.models import (
 from isomorph.core.graph_topology import InvariantTopology
 from isomorph.core.engine import IsomorphEngine
 from isomorph.corpus.benchmark_papers import load_benchmark_corpus
+from isomorph.core.synthesizer import HypothesisSynthesizer
 
 
 class TestIsomorphEngine(unittest.TestCase):
@@ -56,6 +57,15 @@ class TestIsomorphEngine(unittest.TestCase):
         self.assertTrue(len(top_bridge.synthesized_hypothesis) > 20)
         self.assertTrue(len(top_bridge.mathematical_bridge_equation) > 10)
         self.assertTrue(len(top_bridge.falsification_protocol) > 20)
+
+    def test_pairwise_matching(self):
+        p1 = self.corpus[0]  # Neuro
+        p2 = self.corpus[1]  # Hydro
+        bridge = self.engine.matcher.match_pair(p1, p2)
+        self.assertIsNotNone(bridge)
+        synthesized = HypothesisSynthesizer.synthesize_bridge_hypothesis(bridge)
+        self.assertEqual(synthesized.topological_similarity, 1.0)
+        self.assertIn("Interstitial_Debris_Flux", synthesized.mapped_nodes)
 
     def test_axiomatic_collision_detection(self):
         self.engine.run_scan()
