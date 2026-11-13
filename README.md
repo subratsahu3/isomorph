@@ -1,10 +1,12 @@
 # ISOMORPH 🌌
 > **Cross-Disciplinary Structural Isomorphism & Dialectic Discovery Engine for Scientific Breakthroughs**
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-subratsahu3.github.io%2Fisomorph-brightgreen?style=for-the-badge&logo=google-chrome)](https://subratsahu3.github.io/isomorph/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Architecture: Zero-Dependency Core](https://img.shields.io/badge/Architecture-Zero--Dependency%20Core-emerald)](https://github.com/subratsahu3/isomorph)
-[![Status: Production Ready](https://img.shields.io/badge/Status-Production%20Ready-success)](https://github.com/subratsahu3/isomorph)
+
+🌐 **Live Interactive Website & Discovery Laboratory**: [https://subratsahu3.github.io/isomorph/](https://subratsahu3.github.io/isomorph/)
 
 ---
 
